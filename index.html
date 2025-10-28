@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rome Hotels Map</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Rome Hotels</h1>
+        <div class="controls">
+          <select id="viewSelect">
+            <option value="full">Full City View</option>
+            <option value="I">Municipio I</option>
+          </select>
+          <select id="starFilter">
+            <option value="all">All Stars</option>
+            <option value="1">1★</option>
+            <option value="2">2★</option>
+            <option value="3">3★</option>
+            <option value="4">4★</option>
+            <option value="5">5★</option>
+          </select>
+        </div>
+      </header>
+
+      <div id="map"></div>
+
+      <div id="popup" class="popup hidden">
+        <div class="popup-content">
+          <h3 id="popupName"></h3>
+          <div class="popup-main">
+            <div id="popupStars"></div>
+            <div class="status-controls">
+              <label>Status:</label>
+              <select id="popupStatus">
+                <option value="White">White</option>
+                <option value="Green">Green</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Red">Red</option>
+              </select>
+            </div>
+            <div class="phase-controls hidden">
+              <label>Phase:</label>
+              <select id="popupPhase">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+          </div>
+          <textarea id="popupNotes" placeholder="Add notes..."></textarea>
+          <div class="popup-actions">
+            <button onclick="saveHotel()">Save</button>
+            <button onclick="closePopup()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
