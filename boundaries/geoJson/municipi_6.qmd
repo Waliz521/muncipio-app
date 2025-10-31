@@ -1,0 +1,27 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.42.3-Münster">
+  <identifier></identifier>
+  <parentidentifier></parentidentifier>
+  <language></language>
+  <type>dataset</type>
+  <title></title>
+  <abstract></abstract>
+  <links/>
+  <dates/>
+  <fees></fees>
+  <encoding></encoding>
+  <crs>
+    <spatialrefsys nativeFormat="Wkt">
+      <wkt>BOUNDCRS[SOURCECRS[PROJCRS["RDN2008 / UTM zone 33N",BASEGEOGCRS["RDN2008",DATUM["Rete Dinamica Nazionale 2008",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",6706]],CONVERSION["UTM zone 33N",METHOD["Transverse Mercator",ID["EPSG",9807]],PARAMETER["Latitude of natural origin",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8801]],PARAMETER["Longitude of natural origin",15,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["Scale factor at natural origin",0.9996,SCALEUNIT["unity",1],ID["EPSG",8805]],PARAMETER["False easting",500000,LENGTHUNIT["metre",1],ID["EPSG",8806]],PARAMETER["False northing",0,LENGTHUNIT["metre",1],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["GIS."],AREA["Italy - onshore and offshore - between 12�E and 18�E including San Marino and Vatican City State."],BBOX[34.79,12,47.1,18]],ID["EPSG",7792]]],TARGETCRS[GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4326]]],ABRIDGEDTRANSFORMATION["RDN2008 to WGS 84 (1)",VERSION["OGP-Ita"],METHOD["Geocentric translations (geog2D domain)",ID["EPSG",9603]],PARAMETER["X-axis translation",0,ID["EPSG",8605]],PARAMETER["Y-axis translation",0,ID["EPSG",8606]],PARAMETER["Z-axis translation",0,ID["EPSG",8607]],USAGE[SCOPE["(null/copy) Approximation for medium and low accuracy applications assuming equality between plate-fixed static and earth-fixed dynamic CRSs, ignoring static/dynamic CRS differences."],AREA["Italy - onshore and offshore."],BBOX[34.76,5.93,47.1,18.99]],ID["EPSG",6711],REMARK["Approximation at the +/- 1m level assuming that ETRS89 is equivalent to WGS 84. RDN2008 is a regional realisation of ETRS89."]]]</wkt>
+      <proj4>+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs</proj4>
+      <srsid>0</srsid>
+      <srid>0</srid>
+      <authid></authid>
+      <description>RDN2008 / UTM zone 33N</description>
+      <projectionacronym></projectionacronym>
+      <ellipsoidacronym>PARAMETER:6378137:6356752.31414035614579916</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys>
+  </crs>
+  <extent/>
+</qgis>

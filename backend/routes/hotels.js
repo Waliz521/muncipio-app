@@ -2,6 +2,24 @@ const express = require("express");
 const pool = require("../db/pool");
 const router = express.Router();
 
+// Debug: simple health and sample endpoints
+router.get("/_ping", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+router.get("/sample", (req, res) => {
+  return res.json([
+    {
+      id: 1,
+      hotel_name: "Hotel Excelsior",
+      latitude: 41.90696714,
+      longitude: 12.48310923,
+      star_rating: 4,
+      municipio: "I",
+      status: "White",
+      phase: null,
+      notes: "",
+    },
+  ]);
+});
+
 // Get all hotels
 // Get all hotels
 router.get("/", async (req, res) => {
@@ -10,7 +28,7 @@ router.get("/", async (req, res) => {
     let query = "SELECT * FROM hotels WHERE 1=1";
     const params = [];
 
-    console.log("Query params:", { municipio, star_rating }); // Debug log
+    console.log("[api/hotels] params", { municipio, star_rating });
 
     if (municipio && municipio !== "full") {
       params.push(municipio);
@@ -22,13 +40,17 @@ router.get("/", async (req, res) => {
       query += ` AND star_rating = $${params.length}`;
     }
 
-    console.log("Final query:", query, "Params:", params); // Debug log
+    console.log("[api/hotels] query", query, "params", params);
 
-    const result = await pool.query(query, params);
+    // Add a hard timeout so the request doesn't hang forever
+    const result = await Promise.race([
+      pool.query(query, params),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("DB timeout")), 5000)),
+    ]);
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
+    console.error("[api/hotels] error", err);
+    res.status(500).json({ error: "Server error", detail: String(err && err.message || err) });
   }
 });
 

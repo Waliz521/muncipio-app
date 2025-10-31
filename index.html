@@ -18,6 +18,20 @@
           <select id="viewSelect">
             <option value="full">Full City View</option>
             <option value="I">Municipio I</option>
+            <option value="II">Municipio II</option>
+            <option value="III">Municipio III</option>
+            <option value="IV">Municipio IV</option>
+            <option value="V">Municipio V</option>
+            <option value="VI">Municipio VI</option>
+            <option value="VII">Municipio VII</option>
+            <option value="VIII">Municipio VIII</option>
+            <option value="IX">Municipio IX</option>
+            <option value="X">Municipio X</option>
+            <option value="XI">Municipio XI</option>
+            <option value="XII">Municipio XII</option>
+            <option value="XIII">Municipio XIII</option>
+            <option value="XIV">Municipio XIV</option>
+            <option value="XV">Municipio XV</option>
           </select>
           <select id="starFilter">
             <option value="all">All Stars</option>
@@ -27,6 +41,7 @@
             <option value="4">4★</option>
             <option value="5">5★</option>
           </select>
+          <button id="maskToggle" type="button">Hide Mask</button>
         </div>
       </header>
 
@@ -37,23 +52,48 @@
           <h3 id="popupName"></h3>
           <div class="popup-main">
             <div id="popupStars"></div>
-            <div class="status-controls">
-              <label>Status:</label>
-              <select id="popupStatus">
-                <option value="White">White</option>
-                <option value="Green">Green</option>
-                <option value="Yellow">Yellow</option>
-                <option value="Red">Red</option>
-              </select>
+            <div class="status-display">
+              <span id="statusText" class="status-text"></span>
+              <span class="dropdown-arrow" onclick="toggleStatusDropdown(event)"
+                >▼</span
+              >
+              <div id="statusDropdown" class="status-dropdown hidden">
+                <div
+                  class="status-option white-option"
+                  onclick="changeStatus('White')"
+                >
+                  White
+                </div>
+                <div
+                  class="status-option green-option"
+                  onclick="changeStatus('Green')"
+                >
+                  Green
+                </div>
+                <div
+                  class="status-option yellow-option"
+                  onclick="changeStatus('Yellow')"
+                >
+                  Yellow
+                </div>
+                <div
+                  class="status-option red-option"
+                  onclick="changeStatus('Red')"
+                >
+                  Red
+                </div>
+              </div>
             </div>
             <div class="phase-controls hidden">
               <label>Phase:</label>
               <select id="popupPhase">
+                <option value="">Reset</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
               </select>
             </div>
           </div>
+          <div id="popupTech" class="tech-details"></div>
           <textarea id="popupNotes" placeholder="Add notes..."></textarea>
           <div class="popup-actions">
             <button onclick="saveHotel()">Save</button>
@@ -64,6 +104,6 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
