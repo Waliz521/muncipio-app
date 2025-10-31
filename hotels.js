@@ -8,13 +8,14 @@ let currentHotel = null;
 
 export async function loadHotels() {
   try {
-    const response = await fetch('/api/hotels');
-    const hotels = await response.json();
-
+    const response = await fetch("/api/hotels");
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
+
+    const data = await response.json(); // ✅ read only once
+
     if (!data || !Array.isArray(data)) throw new Error("Invalid data format");
-    hotels = data.map((r) => ({
+
+    const hotels = data.map((r) => ({
       id: r.id,
       hotel_name: r.hotel_name || r.Hotel_Name,
       latitude: Number(r.latitude || r.Latitude),
@@ -26,17 +27,23 @@ export async function loadHotels() {
       notes: r.notes || r.Notes,
       address: r.address || r.Address,
     }));
+
     console.log("[hotels] fetched", {
       count: hotels.length,
       sample: hotels.slice(0, 3),
     });
+
+    // store globally if needed
+    window.hotels = hotels;
+
     handleHotelViewChange();
   } catch (error) {
     console.error("[hotels] fetch error", error);
-    hotels = [];
+    window.hotels = [];
     handleHotelViewChange();
   }
 }
+
 export function handleHotelViewChange() {
   const map = getMap();
   map.closePopup();
