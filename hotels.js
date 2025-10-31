@@ -8,7 +8,7 @@ let currentHotel = null;
 
 export async function loadHotels() {
   try {
-    const response = await fetch('http://localhost:5000/api/hotels');
+    const response = await fetch('https://muncipio-app-3.onrender.com/hotels');
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (!data || !Array.isArray(data)) throw new Error("Invalid data format");
