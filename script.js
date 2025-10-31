@@ -5,6 +5,7 @@ import {
   removeDifferenceMask,
   removeCountriesMask,
 } from "./countries.js";
+import { applyRomeBoundsAndSoften, removeRomeSoftener } from "./rome.js";
 import {
   loadMunicipioBoundaries,
   handleMunicipioViewChange,
@@ -13,6 +14,8 @@ import { loadHotels, handleHotelViewChange } from "./hotels.js";
 
 window.onload = () => {
   initMap();
+  // Apply Rome bounds to basemap and soften inside city
+  // applyRomeBoundsAndSoften();
   // Load both dim layers and keep Italy visible
   loadCountriesMask();
   loadDifferenceMask();
@@ -30,10 +33,12 @@ window.onload = () => {
       if (maskEnabled) {
         loadCountriesMask();
         loadDifferenceMask();
+        applyRomeBoundsAndSoften();
         maskBtn.textContent = "Hide Mask";
       } else {
         removeCountriesMask();
         removeDifferenceMask();
+        removeRomeSoftener();
         maskBtn.textContent = "Show Mask";
       }
     });

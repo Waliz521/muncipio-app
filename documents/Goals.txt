@@ -1,0 +1,65 @@
+Goal 
+Build professional interactive map representing all independent active hotels in Rome (~800), as operational field tool for managing contacts and sales relationships with hotels.
+Purpose
+Visual monitoring and control system for leads; provide full visibility, real-time updates, and analysis of each hotel's status without losing overall city view.
+Foundation 
+Single database (one file, one dataset) containing all hotel data, powering two synchronized visualizations.
+
+Full Rome View
+1.	Displays all 15 Municipalities simultaneously, with boundaries clearly visible and outlined in black. (Done)
+2.	Whole city of Rome fully visible; anything outside city limits dimmed or whitened (no external markers or visual elements).
+3.	All hotels (~800) visible at all times; no clustering or grouping of points.
+4.	Clicking Municipality or selecting from menu automatically zooms in: selected Municipality becomes only active one, others faded, non-clickable, inactive. (Done)
+5.	Acts as “intelligent zoom” same map, different perspective.
+
+Focused Municipality View
+1.	Shows only selected Municipality with its hotels.
+2.	Rest of city visible in transparency but inactive. (Done)
+3.	Selected area centered, clearly delineated, operational focus. (Done)
+
+Synchronization
+Both views automatically synchronized; modifications (e.g., change color, add note, update status) instantly appear in other view; always same map, different ways. (Done)
+Hotel Representation
+Simple colored dot, no extra icons/symbols; white status (default) includes gold question mark “?” inside dot.
+Colors for Lead Status: (Done)
+White = not yet visited (default).
+Green = positive lead.
+Yellow = in negotiation.
+Red = lost/negative lead.
+Variants
+Green/yellow include small number “1” or “2” for process phase (e.g., “Yellow 1” = first visit, “Yellow 2” = second); numbers appear on map (on pin) and in popup. (Done)
+Editing: All statuses manually editable directly from map, permanently saved; no data loss after updates/reloads. (Done).
+Pin Scaling
+Automatically scale size by zoom (larger when zoomed in, smaller when zoomed out) for readability with 800 points. (Done)
+Visibility
+No automatic grouping/clustering; see every hotel individually at all times, know exact location.
+Popup on Click
+Simple popup with four main elements (large, clear):
+  1. Star rating. (Done)
+  2. Status (color name in its color, small arrow to change). (Done)
+  3. Exact hotel name (official commercial name). (Done)
+  4. Notes (large free-text field for full page). (Done)
+Popup Additional: Smaller text for technical details (address, coordinates) below, without interfering with main part. (Done)
+
+Filters 
+1.	(work same in both views, combinable, e.g., “4-star in Municipality II”).
+2.	Municipality (one at a time, via click/dropdown). (Done)
+3.	Star category (1★–5★). (Done)
+Map Style
+1.	Outside Rome: completely white/gray, non-clickable.
+2.	Inside Rome: only hotel points, no other elements (no restaurants, shops, stations, icons).
+3.	Optionally: names of main neighborhoods in small text.
+4.	Municipality borders: black, thick, always visible on full-city map. (Done)
+5.	Basemap: clean, modern, minimalistic; developer shows 2–3 styles for choice.
+6.	Final Product: Real operational management tool/field-work platform; every point is actively worked hotel.
+Purposes
+Display all leads clearly/coherently.
+Know real-time status of each.
+Manually update field progress (colors, notes, statuses).
+Quickly filter/view by type/area.
+Maintain complete, synchronized, real-time overview of city.
+Performance: No lag/slowdown; perfectly smooth, responsive, stable with 800 points, on desktop/mobile.
+Development 
+Provide direct live link/file for real-time progress view; client tests continuously on mobile/desktop for design, functionality, sizing, responsiveness, usability; immediate feedback.
+Delivery
+Entire project (code, database, all technical/administrative access) exclusive client property; no developer/third-party access, credentials, modification/view ability post-delivery; fully client-controlled, no dependencies/locks/permissions.

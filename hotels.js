@@ -1,6 +1,6 @@
-import { getMap } from './map.js';
-import { getStatusColor, romanToNumber } from './utils.js';
-import { municipioLayers } from './municipi.js';
+import { getMap } from "./map.js";
+import { getStatusColor, romanToNumber } from "./utils.js";
+import { municipioLayers } from "./municipi.js";
 
 let hotels = [];
 let currentMarkers = [];
@@ -8,10 +8,26 @@ let currentHotel = null;
 
 export async function loadHotels() {
   try {
-    const response = await fetch("http://localhost:5000/api/hotels");
+    const response = await fetch('http://localhost:5000/api/hotels');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    hotels = Array.isArray(data) ? data : [];
-    console.log("[hotels] fetched", { count: hotels.length, sample: hotels.slice(0, 3) });
+    if (!data || !Array.isArray(data)) throw new Error("Invalid data format");
+    hotels = data.map((r) => ({
+      id: r.id,
+      hotel_name: r.hotel_name || r.Hotel_Name,
+      latitude: Number(r.latitude || r.Latitude),
+      longitude: Number(r.longitude || r.Longitude),
+      star_rating: r.star_rating || r.Star_Rating,
+      municipio: r.municipio || r.Municipio,
+      status: r.status || r.Status,
+      phase: r.phase || r.Phase,
+      notes: r.notes || r.Notes,
+      address: r.address || r.Address,
+    }));
+    console.log("[hotels] fetched", {
+      count: hotels.length,
+      sample: hotels.slice(0, 3),
+    });
     handleHotelViewChange();
   } catch (error) {
     console.error("[hotels] fetch error", error);
@@ -19,9 +35,9 @@ export async function loadHotels() {
     handleHotelViewChange();
   }
 }
-
 export function handleHotelViewChange() {
   const map = getMap();
+  map.closePopup();
   currentMarkers.forEach((marker) => map.removeLayer(marker));
   currentMarkers = [];
   const currentZoom = map.getZoom();
@@ -29,8 +45,8 @@ export function handleHotelViewChange() {
   const view = document.getElementById("viewSelect").value;
   const starFilter = document.getElementById("starFilter").value;
   const normalizeMunicipioToNumber = (val) => {
-    if (typeof val === 'number') return val;
-    if (typeof val === 'string') {
+    if (typeof val === "number") return val;
+    if (typeof val === "string") {
       const trimmed = val.trim();
       if (/^\d+$/.test(trimmed)) return Number(trimmed);
       return romanToNumber(trimmed);
@@ -38,13 +54,20 @@ export function handleHotelViewChange() {
     return 0;
   };
   const viewNum = normalizeMunicipioToNumber(view);
-  let considered = 0, passedFilters = 0;
-  console.log("[hotels] render", { view, viewNum, starFilter, total: hotels.length });
+  let considered = 0,
+    passedFilters = 0;
+  console.log("[hotels] render", {
+    view,
+    viewNum,
+    starFilter,
+    total: hotels.length,
+  });
   hotels.forEach((hotel) => {
     considered++;
     const hotelMunicipioNum = normalizeMunicipioToNumber(hotel.municipio);
     if (view !== "full" && hotelMunicipioNum !== viewNum) return;
-    if (starFilter !== "all" && hotel.star_rating != parseInt(starFilter)) return;
+    if (starFilter !== "all" && hotel.star_rating != parseInt(starFilter))
+      return;
     passedFilters++;
     const marker = L.circleMarker([hotel.latitude, hotel.longitude], {
       radius: initialRadius,
@@ -58,7 +81,14 @@ export function handleHotelViewChange() {
     marker.on("click", onMarkerClick);
     currentMarkers.push(marker);
   });
-  console.log("[hotels] considered", considered, "rendered", currentMarkers.length, "passedFilters", passedFilters);
+  console.log(
+    "[hotels] considered",
+    considered,
+    "rendered",
+    currentMarkers.length,
+    "passedFilters",
+    passedFilters
+  );
   if (view !== "full" && currentMarkers.length === 0) {
     const selectedMunicipio = municipioLayers.find(
       (layer) => layer.municipioId === romanToNumber(view)
@@ -70,7 +100,13 @@ export function handleHotelViewChange() {
         .setContent(`No hotels data available for Municipio ${view}`)
         .openOn(map);
     }
-    console.warn("[hotels] no markers after filtering", { view, viewNum, starFilter, total: hotels.length, sample: hotels.slice(0, 5) });
+    console.warn("[hotels] no markers after filtering", {
+      view,
+      viewNum,
+      starFilter,
+      total: hotels.length,
+      sample: hotels.slice(0, 5),
+    });
   }
 }
 
@@ -91,7 +127,9 @@ function getSampleData() {
 }
 
 function getMarkerRadius(zoom) {
-  const minSize = 3, maxSize = 8, zoomRange = 15;
+  const minSize = 3,
+    maxSize = 8,
+    zoomRange = 15;
   return minSize + ((zoom - 10) / zoomRange) * (maxSize - minSize);
 }
 
@@ -99,9 +137,13 @@ function onMarkerClick(e) {
   const hotel = e.target.hotelData;
   console.log("[hotels] click", hotel);
   document.getElementById("popupName").textContent = hotel.hotel_name;
-  document.getElementById("popupStars").textContent = "★".repeat(hotel.star_rating);
+  document.getElementById("popupStars").textContent = "★".repeat(
+    hotel.star_rating
+  );
   document.getElementById("statusText").textContent = hotel.status;
-  document.getElementById("statusText").className = `status-text status-${hotel.status.toLowerCase()}`;
+  document.getElementById(
+    "statusText"
+  ).className = `status-text status-${hotel.status.toLowerCase()}`;
   document.getElementById("popupNotes").value = hotel.notes || "";
   document.getElementById("popupPhase").value = hotel.phase || "";
   const tech = document.getElementById("popupTech");
@@ -109,11 +151,14 @@ function onMarkerClick(e) {
     const addressLine = hotel.address ? `${hotel.address}<br>` : "";
     const lat = Number(hotel.latitude);
     const lng = Number(hotel.longitude);
-    const coordLine = `Lat: ${isFinite(lat) ? lat.toFixed(5) : "-"}, Lng: ${isFinite(lng) ? lng.toFixed(5) : "-"}`;
+    const coordLine = `Lat: ${isFinite(lat) ? lat.toFixed(5) : "-"}, Lng: ${
+      isFinite(lng) ? lng.toFixed(5) : "-"
+    }`;
     tech.innerHTML = `${addressLine}${coordLine}`;
   }
   const phaseControls = document.querySelector(".phase-controls");
-  if (hotel.status === "Green" || hotel.status === "Yellow") phaseControls.classList.remove("hidden");
+  if (hotel.status === "Green" || hotel.status === "Yellow")
+    phaseControls.classList.remove("hidden");
   else phaseControls.classList.add("hidden");
   document.getElementById("popup").classList.remove("hidden");
   currentHotel = hotel;
@@ -132,7 +177,8 @@ function changeStatus(newStatus) {
   const dropdown = document.getElementById("statusDropdown");
   dropdown.classList.add("hidden");
   const phaseControls = document.querySelector(".phase-controls");
-  if (newStatus === "Green" || newStatus === "Yellow") phaseControls.classList.remove("hidden");
+  if (newStatus === "Green" || newStatus === "Yellow")
+    phaseControls.classList.remove("hidden");
   else {
     phaseControls.classList.add("hidden");
     document.getElementById("popupPhase").value = "";
@@ -140,10 +186,7 @@ function changeStatus(newStatus) {
 }
 
 async function saveHotel() {
-  if (!currentHotel) {
-    console.warn("[hotels] saveHotel called with no currentHotel");
-    return;
-  }
+  if (!currentHotel) return;
   const id = currentHotel.id;
   const status = document.getElementById("statusText").textContent;
   const phaseVal = document.getElementById("popupPhase").value;
@@ -151,21 +194,26 @@ async function saveHotel() {
   const phase = phaseVal === "" ? null : phaseVal;
 
   try {
-    const resp = await fetch(`http://localhost:5000/api/hotels/${id}`, {
-      method: "PUT",
+    const response = await fetch(`/hotels/${id}`, {
+      // Adjust endpoint
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, phase, notes }),
+      body: JSON.stringify({
+        status,
+        phase: phase ? Number(phase) : null,
+        notes: notes || null,
+      }),
     });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const updated = await resp.json();
-    // Update local state
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const updated = { status, phase, notes };
     currentHotel.status = updated.status;
     currentHotel.phase = updated.phase;
     currentHotel.notes = updated.notes;
-    const idx = hotels.findIndex(h => h.id === id);
+    const idx = hotels.findIndex((h) => h.id === id);
     if (idx !== -1) hotels[idx] = { ...hotels[idx], ...updated };
-    // Update marker color
-    const marker = currentMarkers.find(m => m.hotelData && m.hotelData.id === id);
+    const marker = currentMarkers.find(
+      (m) => m.hotelData && m.hotelData.id === id
+    );
     if (marker) {
       marker.hotelData = { ...marker.hotelData, ...updated };
       marker.setStyle({ fillColor: getStatusColor(updated.status) });
@@ -176,7 +224,6 @@ async function saveHotel() {
     alert("Failed to save hotel. Please try again.");
   }
 }
-
 function closePopup() {
   const popup = document.getElementById("popup");
   popup.classList.add("hidden");
@@ -185,4 +232,9 @@ function closePopup() {
   currentHotel = null;
 }
 
-Object.assign(window, { toggleStatusDropdown, changeStatus, saveHotel, closePopup });
+Object.assign(window, {
+  toggleStatusDropdown,
+  changeStatus,
+  saveHotel,
+  closePopup,
+});
