@@ -11,11 +11,11 @@ export async function loadHotels() {
     const response = await fetch("/api/hotels");
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    const data = await response.json(); // ✅ read only once
-
+    const data = await response.json();
     if (!data || !Array.isArray(data)) throw new Error("Invalid data format");
 
-    const hotels = data.map((r) => ({
+    // ✅ FIX: Remove 'const' - update the GLOBAL variable
+    hotels = data.map((r) => ({
       id: r.id,
       hotel_name: r.hotel_name || r.Hotel_Name,
       latitude: Number(r.latitude || r.Latitude),
@@ -29,17 +29,14 @@ export async function loadHotels() {
     }));
 
     console.log("[hotels] fetched", {
-      count: hotels.length,
+      count: hotels.length, // Now shows global count
       sample: hotels.slice(0, 3),
     });
 
-    // store globally if needed
-    window.hotels = hotels;
-
-    handleHotelViewChange();
+    handleHotelViewChange(); // Now uses the populated global array
   } catch (error) {
     console.error("[hotels] fetch error", error);
-    window.hotels = [];
+    hotels = []; // Clear global array on error
     handleHotelViewChange();
   }
 }
@@ -119,22 +116,6 @@ export function handleHotelViewChange() {
   }
 }
 
-function getSampleData() {
-  return [
-    {
-      id: 1,
-      hotel_name: "Hotel Excelsior",
-      latitude: 41.90696714,
-      longitude: 12.48310923,
-      star_rating: 1,
-      municipio: "I",
-      status: "White",
-      phase: null,
-      notes: "",
-    },
-  ];
-}
-
 function getMarkerRadius(zoom) {
   const minSize = 3,
     maxSize = 8,
@@ -194,6 +175,7 @@ function changeStatus(newStatus) {
   }
 }
 
+// hotels.js - FIX THE SAVE FUNCTION:
 async function saveHotel() {
   if (!currentHotel) return;
   const id = currentHotel.id;
@@ -203,9 +185,9 @@ async function saveHotel() {
   const phase = phaseVal === "" ? null : phaseVal;
 
   try {
-    const response = await fetch(`/hotels/${id}`, {
-      // Adjust endpoint
-      method: "PATCH",
+    // ✅ FIX: Use PUT method and correct endpoint
+    const response = await fetch(`/api/hotels/${id}`, {
+      method: "PUT", // Your backend uses PUT, not PATCH
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         status,
@@ -213,13 +195,17 @@ async function saveHotel() {
         notes: notes || null,
       }),
     });
+
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const updated = { status, phase, notes };
+
+    const updated = await response.json();
     currentHotel.status = updated.status;
     currentHotel.phase = updated.phase;
     currentHotel.notes = updated.notes;
+
     const idx = hotels.findIndex((h) => h.id === id);
     if (idx !== -1) hotels[idx] = { ...hotels[idx], ...updated };
+
     const marker = currentMarkers.find(
       (m) => m.hotelData && m.hotelData.id === id
     );
@@ -227,23 +213,10 @@ async function saveHotel() {
       marker.hotelData = { ...marker.hotelData, ...updated };
       marker.setStyle({ fillColor: getStatusColor(updated.status) });
     }
+
     closePopup();
   } catch (err) {
     console.error("[hotels] save error", err);
     alert("Failed to save hotel. Please try again.");
   }
 }
-function closePopup() {
-  const popup = document.getElementById("popup");
-  popup.classList.add("hidden");
-  const dropdown = document.getElementById("statusDropdown");
-  dropdown.classList.add("hidden");
-  currentHotel = null;
-}
-
-Object.assign(window, {
-  toggleStatusDropdown,
-  changeStatus,
-  saveHotel,
-  closePopup,
-});
