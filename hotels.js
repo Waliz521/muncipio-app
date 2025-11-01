@@ -175,7 +175,6 @@ function changeStatus(newStatus) {
   }
 }
 
-// hotels.js - FIX THE SAVE FUNCTION:
 async function saveHotel() {
   if (!currentHotel) return;
   const id = currentHotel.id;
@@ -185,9 +184,9 @@ async function saveHotel() {
   const phase = phaseVal === "" ? null : phaseVal;
 
   try {
-    // ✅ FIX: Use PUT method and correct endpoint
+    // ✅ FIX: Correct endpoint and method
     const response = await fetch(`/api/hotels/${id}`, {
-      method: "PUT", // Your backend uses PUT, not PATCH
+      method: "PUT", // Your backend uses PUT
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         status,
@@ -198,25 +197,46 @@ async function saveHotel() {
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    const updated = await response.json();
-    currentHotel.status = updated.status;
-    currentHotel.phase = updated.phase;
-    currentHotel.notes = updated.notes;
+    // ✅ Get the updated data from response
+    const updatedHotel = await response.json();
 
+    // Update local data
+    currentHotel.status = updatedHotel.status;
+    currentHotel.phase = updatedHotel.phase;
+    currentHotel.notes = updatedHotel.notes;
+
+    // Update hotels array
     const idx = hotels.findIndex((h) => h.id === id);
-    if (idx !== -1) hotels[idx] = { ...hotels[idx], ...updated };
+    if (idx !== -1) {
+      hotels[idx] = { ...hotels[idx], ...updatedHotel };
+    }
 
+    // Update marker color
     const marker = currentMarkers.find(
       (m) => m.hotelData && m.hotelData.id === id
     );
     if (marker) {
-      marker.hotelData = { ...marker.hotelData, ...updated };
-      marker.setStyle({ fillColor: getStatusColor(updated.status) });
+      marker.hotelData = { ...marker.hotelData, ...updatedHotel };
+      marker.setStyle({ fillColor: getStatusColor(updatedHotel.status) });
     }
 
+    console.log("✅ Hotel saved successfully:", updatedHotel);
     closePopup();
   } catch (err) {
     console.error("[hotels] save error", err);
     alert("Failed to save hotel. Please try again.");
   }
 }
+
+function closePopup() {
+  const popup = document.getElementById("popup");
+  popup.classList.add("hidden");
+  const dropdown = document.getElementById("statusDropdown");
+  dropdown.classList.add("hidden");
+  currentHotel = null;
+}
+// Make functions globally available for HTML onclick handlers
+window.closePopup = closePopup;
+window.saveHotel = saveHotel;
+window.toggleStatusDropdown = toggleStatusDropdown;
+window.changeStatus = changeStatus;
